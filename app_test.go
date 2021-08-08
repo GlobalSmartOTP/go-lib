@@ -9,12 +9,7 @@ import (
 var Token string
 
 func init() {
-	err := os.Setenv("TOKEN", "bb576c7cf9aeea304eaaa6c5be9dfc0c")
-	if err != nil {
-		return
-	}
 	Token = os.Getenv("TOKEN")
-
 }
 
 func TestApp_Send1(t *testing.T) {
