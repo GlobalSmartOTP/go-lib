@@ -6,36 +6,35 @@ import (
 	"testing"
 )
 
-var Token string
+var ApiKey string
 
 func init() {
-	Token = os.Getenv("TOKEN")
+	ApiKey = os.Getenv("apiKey")
 }
 
 func TestApp_Send1(t *testing.T) {
-	app := go_lib.New(go_lib.Config{ApiKey: Token})
-	res, err := app.Send(&go_lib.SendAutoSMSCode{
+	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
+	res, err := app.Send(&go_lib.SendSMS{
 		CountryCode: 0,
 		Mobile:      "9016574449",
-		ExpireTime:  0,
 		Param1:      "",
 		Param2:      "",
 		Param3:      "",
-		Length:      6,
-		TemplateID:  3,
+		TemplateID:  11,
+		Code:        "123123",
 	})
 	if err != nil {
 		t.Errorf("sending sms failed %e", err)
 		return
 	}
-	if res.ReferenceID == 0 {
+	if res.ReferenceID == "" {
 		t.Errorf("sending sms failed:" + res.ToString())
 	}
 
 }
 
 func TestApp_Send2(t *testing.T) {
-	app := go_lib.New(go_lib.Config{ApiKey: Token})
+	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
 	_, err := app.Send(&go_lib.SendAutoSMSCode{
 		CountryCode: 0,
 		Mobile:      "9016574449",
@@ -54,7 +53,7 @@ func TestApp_Send2(t *testing.T) {
 }
 
 func TestApp_Verify(t *testing.T) {
-	app := go_lib.New(go_lib.Config{ApiKey: Token})
+	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
 	res, err := app.Verify(go_lib.VerifyRequest{
 		CountryCode: 0,
 		Mobile:      "9016574449",
@@ -73,7 +72,7 @@ func TestApp_Verify(t *testing.T) {
 }
 
 func TestApp_GetStatus1(t *testing.T) {
-	app := go_lib.New(go_lib.Config{ApiKey: Token})
+	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
 	res, err := app.GetStatus(go_lib.StatusRequest{
 		ReferenceID: 234,
 	})
@@ -90,7 +89,7 @@ func TestApp_GetStatus1(t *testing.T) {
 }
 
 func TestApp_GetStatus2(t *testing.T) {
-	app := go_lib.New(go_lib.Config{ApiKey: Token})
+	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
 	res, err := app.GetStatus(go_lib.StatusRequest{
 		ReferenceID: 1625640786533816718,
 	})

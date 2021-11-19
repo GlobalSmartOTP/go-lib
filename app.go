@@ -179,7 +179,7 @@ func (b *BasicRequest) validate() error {
 	if b.ExpireTime != 0 && (b.ExpireTime < 60 || b.ExpireTime > 86400) {
 		return InvalidCountryCodeErr
 	}
-	if b.Code != "" {
+	if b.Code == "" {
 		return CodeIsRequiredErr
 	}
 	if b.Length < 4 || b.Length > 10 {
@@ -205,7 +205,7 @@ type Response interface {
 type SendResponse struct {
 	Status      string                 `json:"status"`
 	Error       map[string]interface{} `json:"error"`
-	ReferenceID int64                  `json:"referenceID"`
+	ReferenceID string                 `json:"referenceID"`
 }
 type StatusResponse struct {
 	Status      string                 `json:"status"`
@@ -245,7 +245,7 @@ func (r *StatusResponse) ToString() string {
 }
 func (r *SendResponse) ToString() string {
 	if r.Status == "success" {
-		return "sending status: success\nsent : true\nreferenceID : " + strconv.FormatInt(r.ReferenceID, 10)
+		return "sending status: success\nsent : true\nreferenceID : " + r.ReferenceID
 	} else {
 		return "sending status: failed\nmessage : " + r.Error["message"].(string) + "\nerror code : " + strconv.FormatFloat(r.Error["code"].(float64), 'E', -1, 64)
 	}
@@ -326,6 +326,17 @@ func (app *App) Send(req Request) (*SendResponse, error) {
 		basicReq.Param3 = r.Param3
 		basicReq.Mobile = r.Mobile
 		basicReq.Method = "sms"
+		break
+	case *SendSMS:
+		var r = req.(*SendSMS)
+		basicReq.CountryCode = r.CountryCode
+		basicReq.TemplateID = r.TemplateID
+		basicReq.Param1 = r.Param1
+		basicReq.Param2 = r.Param2
+		basicReq.Param3 = r.Param3
+		basicReq.Mobile = r.Mobile
+		basicReq.Method = "sms"
+		basicReq.Code = r.Code
 		break
 	case *SendIVRCode:
 		var r = req.(*SendIVRCode)
