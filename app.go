@@ -130,7 +130,7 @@ func (b *VerifyRequest) validate() error {
 	return nil
 }
 func (b *StatusRequest) validate() error {
-	if b.ReferenceID == 0 {
+	if b.ReferenceID == "" {
 		return InvalidReferenceID
 	}
 	return nil
@@ -215,7 +215,7 @@ type StatusResponse struct {
 	OTPMethod   string                 `json:"OTPMethod"`
 }
 type StatusRequest struct {
-	ReferenceID int64 `json:"OTPReferenceID"`
+	ReferenceID string `json:"OTPReferenceID"`
 }
 type VerifyRequest struct {
 	//OTP is code

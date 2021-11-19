@@ -74,7 +74,7 @@ func TestApp_Verify(t *testing.T) {
 func TestApp_GetStatus1(t *testing.T) {
 	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
 	res, err := app.GetStatus(go_lib.StatusRequest{
-		ReferenceID: 234,
+		ReferenceID: "234",
 	})
 	if err != nil {
 		t.Errorf("verify error accurred%e", err)
@@ -91,7 +91,7 @@ func TestApp_GetStatus1(t *testing.T) {
 func TestApp_GetStatus2(t *testing.T) {
 	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
 	res, err := app.GetStatus(go_lib.StatusRequest{
-		ReferenceID: 1625640786533816718,
+		ReferenceID: "1625640786533816718",
 	})
 	if err != nil {
 		t.Errorf("verify error accurred%e", err)
