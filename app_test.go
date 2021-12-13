@@ -9,14 +9,14 @@ import (
 var ApiKey string
 
 func init() {
-	ApiKey = os.Getenv("apiKey")
+	ApiKey = os.Getenv("b5a85c7b111c0bb2020596890afc95d7")
 }
 
 func TestApp_Send1(t *testing.T) {
 	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
-	res, err := app.Send(&go_lib.SendSMS{
+	res, err := app.Send(&go_lib.SendOTP{
 		CountryCode: 0,
-		Mobile:      "9016574449",
+		Mobile:      "9123456789",
 		Param1:      "",
 		Param2:      "",
 		Param3:      "",
@@ -35,9 +35,9 @@ func TestApp_Send1(t *testing.T) {
 
 func TestApp_Send2(t *testing.T) {
 	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
-	_, err := app.Send(&go_lib.SendAutoSMSCode{
+	_, err := app.Send(&go_lib.SendAutoOTPCode{
 		CountryCode: 0,
-		Mobile:      "9016574449",
+		Mobile:      "9123456789",
 		ExpireTime:  0,
 		Param1:      "",
 		Param2:      "",
@@ -56,7 +56,7 @@ func TestApp_Verify(t *testing.T) {
 	app := go_lib.New(go_lib.Config{ApiKey: ApiKey})
 	res, err := app.Verify(go_lib.VerifyRequest{
 		CountryCode: 0,
-		Mobile:      "9016574449",
+		Mobile:      "9123456789",
 		OTP:         "xxx",
 	})
 	if err != nil {

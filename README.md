@@ -30,7 +30,7 @@ func main() {
 	app := go_lib.New(go_lib.Config{ApiKey: "my_api_key"})
 	res, err := app.Send(&go_lib.SendAutoSMSCode{
 		CountryCode: 0,
-		Mobile:      "9016574449",
+		Mobile:      "9123456789",
 		ExpireTime:  0,
 		Param1:      "",
 		Param2:      "",

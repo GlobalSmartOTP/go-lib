@@ -27,8 +27,8 @@ var (
 	InvalidReferenceID    = errors.New("referenceID not found")
 )
 
-//SendSMS use when you want to send your code to end user
-type SendSMS struct {
+//SendOTP use when you want to send your code to end user
+type SendOTP struct {
 	//Code is required.
 	Code string
 
@@ -51,15 +51,17 @@ type SendSMS struct {
 	TemplateID int
 }
 
-//SendAutoSMSCode use when you don't want to generate otp code and our system generate otp code and verify it.
-type SendAutoSMSCode struct {
+//SendAutoOTPCode use when you don't want to generate otp code and our system generate otp code and verify it.
+type SendAutoOTPCode struct {
 	//CountryCode is optional.
 	CountryCode int
 
 	//Mobile is required.
 	Mobile string
 
-	//if you want your otp could be expired, set ExpireTime as nanosecond
+	//if you want your otp could be expired, set ExpireTime as second .
+	//
+	//for example 60 second
 	ExpireTime int64
 
 	//Param1 is optional.
@@ -145,7 +147,7 @@ func (b *SendIVRCode) validate() error {
 	return nil
 }
 
-func (b *SendAutoSMSCode) validate() error {
+func (b *SendAutoOTPCode) validate() error {
 	if b.Mobile == "" {
 		return MobileIsRequiredErr
 	}
@@ -160,7 +162,7 @@ func (b *SendAutoSMSCode) validate() error {
 	}
 	return nil
 }
-func (b *SendSMS) validate() error {
+func (b *SendOTP) validate() error {
 	if b.Mobile == "" {
 		return MobileIsRequiredErr
 	}
@@ -250,7 +252,7 @@ func (r *SendResponse) ToString() string {
 		return "sending status: failed\nmessage : " + r.Error["message"].(string) + "\nerror code : " + strconv.FormatFloat(r.Error["code"].(float64), 'E', -1, 64)
 	}
 }
-
+//Verify otp code that clients sent it to you
 func (app *App) Verify(req VerifyRequest) (*VerifyResponse, error) {
 	err := req.validate()
 	if err != nil {
@@ -279,6 +281,7 @@ func (app *App) Verify(req VerifyRequest) (*VerifyResponse, error) {
 	}
 	return res, nil
 }
+//GetStatus show you details of your otp
 func (app *App) GetStatus(req StatusRequest) (*StatusResponse, error) {
 	err := req.validate()
 	if err != nil {
@@ -307,6 +310,15 @@ func (app *App) GetStatus(req StatusRequest) (*StatusResponse, error) {
 	}
 	return res, nil
 }
+//Send a new otp.
+//
+//type: SendAutoOTPCode:gsOTP generate otp code.you only set length of code
+//
+//type: SendOTP:send manual otp code
+//
+//type: SendIVRCode
+//
+//or use basic request BasicRequest
 func (app *App) Send(req Request) (*SendResponse, error) {
 	err := req.validate()
 	if err != nil {
@@ -315,8 +327,8 @@ func (app *App) Send(req Request) (*SendResponse, error) {
 	var basicReq BasicRequest
 
 	switch req.(type) {
-	case *SendAutoSMSCode:
-		var r = req.(*SendAutoSMSCode)
+	case *SendAutoOTPCode:
+		var r = req.(*SendAutoOTPCode)
 		basicReq.CountryCode = r.CountryCode
 		basicReq.TemplateID = r.TemplateID
 		basicReq.Length = r.Length
@@ -327,8 +339,8 @@ func (app *App) Send(req Request) (*SendResponse, error) {
 		basicReq.Mobile = r.Mobile
 		basicReq.Method = "sms"
 		break
-	case *SendSMS:
-		var r = req.(*SendSMS)
+	case *SendOTP:
+		var r = req.(*SendOTP)
 		basicReq.CountryCode = r.CountryCode
 		basicReq.TemplateID = r.TemplateID
 		basicReq.Param1 = r.Param1
@@ -374,7 +386,7 @@ func (app *App) Send(req Request) (*SendResponse, error) {
 	}
 	return res, nil
 }
-
+//New create new client .
 func New(c Config) *App {
 	if c.ApiKey == "" {
 		panic("apiKey not set")
